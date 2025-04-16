@@ -5,33 +5,63 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <random>
 
 using namespace std;
 
-struct Flashcard {
+class Flashcard {
+private:
     string question;
     string answer;
+
+public:
+    Flashcard() {
+        question = "";
+        answer = "";
+    }
+
+    Flashcard(string q, string a) {
+        question = q;
+        answer = a;
+    }
+
+    void setQuestion(string q) {
+        question = q;
+    }
+
+    void setAnswer(string a) {
+        answer = a;
+    }
+
+    string getQuestion() const{
+        return question;
+    }
+
+    string getAnswer() const{
+        return answer;
+    }
 };
 
 // Recursive function that gets the questions and answers from the user.
-void inputFlashcards(vector<Flashcard>& flashcards, int count) {
+void input(vector<Flashcard>& flashcards, int count) {
     if (count <= 0) return;
 
-    Flashcard fc;
-
+    string q, a;
     cout << "\nEnter question: ";
-    getline(cin, fc.question);
-
+    getline(cin, q);
     cout << "Enter answer: ";
-    getline(cin, fc.answer);
+    getline(cin, a);
 
+    Flashcard fc;
+    fc.setQuestion(q);
+    fc.setAnswer(a);
     flashcards.push_back(fc);
 
-    inputFlashcards(flashcards, count - 1); 
+    input(flashcards, count - 1);
 }
 
 // Stores the questions and answers entered by the user in the "questions.txt" and "answers.txt" files
-void saveFlashcards(const vector<Flashcard>& flashcards, bool append = false) {
+void savefc(const vector<Flashcard>& flashcards, bool append = false) {
     ofstream qfile("questions.txt", append ? ios::app : ios::out);
     ofstream afile("answers.txt", append ? ios::app : ios::out);
 
@@ -40,9 +70,9 @@ void saveFlashcards(const vector<Flashcard>& flashcards, bool append = false) {
         return;
     }
 
-    for (const auto& fc : flashcards) {
-        qfile << fc.question << "\n";
-        afile << fc.answer << "\n";
+    for (int i = 0; i < flashcards.size(); i++) {
+        qfile << flashcards[i].getQuestion() << "\n";
+        afile << flashcards[i].getAnswer() << "\n";
     }
 
     qfile.close();
@@ -50,7 +80,7 @@ void saveFlashcards(const vector<Flashcard>& flashcards, bool append = false) {
 }
 
 // Accesses the questions and their matching answers from each file
-void loadFlashcards(vector<Flashcard>& flashcards) {
+void loadfc(vector<Flashcard>& flashcards) {
     ifstream qfile("questions.txt");
     ifstream afile("answers.txt");
 
@@ -58,22 +88,28 @@ void loadFlashcards(vector<Flashcard>& flashcards) {
 
     string q, a;
     while (getline(qfile, q) && getline(afile, a)) {
-        flashcards.push_back({ q, a });
+        Flashcard fc;
+        fc.setQuestion(q);
+        fc.setAnswer(a);
+        flashcards.push_back(fc);
     }
 
     qfile.close();
     afile.close();
 }
 
-// Shuffles the questions so when the user is testing themselves it is outputted in random order
+// Shuffles the questions using srand and random_shuffle
 void shuffleFlashcards(vector<Flashcard>& flashcards) {
-    srand((unsigned)time(0));
-    random_shuffle(flashcards.begin(), flashcards.end());
+    srand(static_cast<unsigned int>(time(0)));
+    for (int i = 0; i < flashcards.size(); ++i) {
+        int j = rand() % flashcards.size();
+        swap(flashcards[i], flashcards[j]);
+    }
 }
 
-// Outputs the quesitons and after the user hits ENTER the answer is revealed
+// Outputs the questions and after the user hits ENTER the answer is revealed
 // Continues until user enters 'n' when asked to continue or all the flashcards are used
-void runSession(vector<Flashcard>& flashcards) {
+void quiz(vector<Flashcard>& flashcards) {
     if (flashcards.empty()) {
         cout << "No flashcards available.\n";
         return;
@@ -81,14 +117,12 @@ void runSession(vector<Flashcard>& flashcards) {
 
     shuffleFlashcards(flashcards);
 
-    cin.ignore();
-
     for (int i = 0; i < flashcards.size(); ++i) {
-        cout << "\nQuestion: " << flashcards[i].question << endl;
+        cout << "\nQuestion: " << flashcards[i].getQuestion() << endl;
         cout << "Press Enter to see the answer...";
         cin.get();
 
-        cout << "Answer: " << flashcards[i].answer << endl;
+        cout << "Answer: " << flashcards[i].getAnswer() << endl;
 
         if (i < flashcards.size() - 1) {
             cout << "Continue? (y/n): ";
@@ -99,11 +133,11 @@ void runSession(vector<Flashcard>& flashcards) {
         }
     }
 
-    cout << "\nSession ended.\n";
+    cout << "\nYou have gone thorugh all of the FlashCards, GOOD JOB :)\n";
 }
 
 // Empties the memory of the questions and answer files
-void clearFlashcards() {
+void clearFile() {
     ofstream qfile("questions.txt", ios::trunc);
     ofstream afile("answers.txt", ios::trunc);
     qfile.close();
@@ -114,7 +148,7 @@ void clearFlashcards() {
 // Main Function
 int main() {
     vector<Flashcard> flashcards;
-    loadFlashcards(flashcards);
+    loadfc(flashcards);
 
     cout << "Welcome to the Flashcard App!\n";
 
@@ -136,8 +170,8 @@ int main() {
             cout << "\nHow many flashcards would you like to add?: ";
 
             while (!(cin >> count)) {
-                cin.clear(); 
-                cin.ignore(1000, '\n'); 
+                cin.clear();
+                cin.ignore(1000, '\n');
                 cout << "Invalid input. Please enter a number: ";
             }
 
@@ -145,23 +179,23 @@ int main() {
             cout << "\n";
 
             vector<Flashcard> newCards;
-            inputFlashcards(newCards, count);
-            saveFlashcards(newCards, true);
+            input(newCards, count);
+            savefc(newCards, true);
             flashcards.insert(flashcards.end(), newCards.begin(), newCards.end());
             cout << "------------------------------------------------------------------------------------------------------------------------";
             break;
         }
         case 2:
-            runSession(flashcards);
+            quiz(flashcards);
             cout << "------------------------------------------------------------------------------------------------------------------------";
             break;
         case 3:
-            clearFlashcards();
+            clearFile();
             flashcards.clear();
             cout << "------------------------------------------------------------------------------------------------------------------------";
             break;
         case 4:
-            cout << "Goodbye!\n";
+            cout << "Thank you for playing the FlashCard Quiz!\n";
             return 0;
         default:
             cout << "Invalid choice. Please try again.\n";
