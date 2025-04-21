@@ -1,5 +1,6 @@
 The Flashcard Quiz.cpp contains the code for the entire program. 
 And the answers.txt and questions.txt should be empty text files as they are used to store the user entered questions and answers.
+
 ----------------------------------------------------------------------------------------------------------------------------------
 
 INSTRUCTIONS TO RUN THE PROGRAM (preferably do second option)
@@ -12,6 +13,6 @@ Then Run the program...
 
 OR...
 
-If you have visual studios copy and paste the code from "Flashcard Quiz.cpp" and then run the program 
+If you have visual studios copy and paste the code from "Flashcard Quiz.cpp" to a new project, and then run the program 
 If it doesn't work, add 2 text files named asnwers and questions. they should have .txt on its name 
-Then hit start without debuggin, it should open the console app, then follow the instuctions to begin the experience. 
+Then start the program, it should open the console app, then follow the instuctions to begin the experience. 
