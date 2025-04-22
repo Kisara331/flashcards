@@ -1,0 +1,7 @@
+All of the code used to test each of the fucntions is included in the file named ""function-name" function test"
+And the output recieved from each of the test code is named "function-name function output"
+
+The for the shuffleflashcards there are 2 outputs given in order to show how each variation is different after a shuffle occurs. 
+
+And for the "quiz" function there is no test function as the best method to test that function is to run the full program itself. And go to the 2nd option in the
+program to start the review session. 
