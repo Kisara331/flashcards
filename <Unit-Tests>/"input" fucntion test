@@ -1,0 +1,84 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Flashcard {
+private:
+    string question;
+    string answer;
+
+public:
+    Flashcard() {
+        question = "";
+        answer = "";
+    }
+
+    Flashcard(string q, string a) {
+        question = q;
+        answer = a;
+    }
+
+    void setQuestion(string q) {
+        question = q;
+    }
+
+    void setAnswer(string a) {
+        answer = a;
+    }
+
+    string getQuestion() const {
+        return question;
+    }
+
+    string getAnswer() const {
+        return answer;
+    }
+};
+
+// Recursive function to get flashcards from user input
+void input(vector<Flashcard>& flashcards, int count) {
+    if (count <= 0) return;
+
+    string q, a;
+    cout << "\nEnter question: ";
+    getline(cin, q);
+    cout << "Enter answer: ";
+    getline(cin, a);
+
+    Flashcard fc;
+    fc.setQuestion(q);
+    fc.setAnswer(a);
+    flashcards.push_back(fc);
+
+    input(flashcards, count - 1);
+}
+
+// Test function for input()
+void testInputFunction() {
+    vector<Flashcard> testFlashcards;
+    int count;
+
+    cout << "Unit Test: Enter number of flashcards to add: ";
+    while (!(cin >> count)) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input. Please enter a number: ";
+    }
+    cin.ignore();  // Clear newline from buffer
+
+    input(testFlashcards, count);
+
+    cout << "\n--- Verifying Entered Flashcards ---\n";
+    for (int i = 0; i < testFlashcards.size(); ++i) {
+        cout << "Flashcard " << (i + 1) << ":\n";
+        cout << "  Question: " << testFlashcards[i].getQuestion() << "\n";
+        cout << "  Answer:   " << testFlashcards[i].getAnswer() << "\n";
+    }
+}
+
+int main() {
+    testInputFunction();
+    return 0;
+}
