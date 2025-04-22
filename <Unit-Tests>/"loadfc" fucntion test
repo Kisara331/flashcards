@@ -1,0 +1,73 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <cassert>
+
+using namespace std;
+
+class Flashcard {
+private:
+    string question;
+    string answer;
+
+public:
+    Flashcard() {}
+    Flashcard(string q, string a) : question(q), answer(a) {}
+
+    void setQuestion(string q) { question = q; }
+    void setAnswer(string a) { answer = a; }
+
+    string getQuestion() const { return question; }
+    string getAnswer() const { return answer; }
+};
+
+void loadfc(vector<Flashcard>& flashcards) {
+    ifstream qfile("questions.txt");
+    ifstream afile("answers.txt");
+
+    if (!qfile || !afile) return;
+
+    string q, a;
+    while (getline(qfile, q) && getline(afile, a)) {
+        Flashcard fc;
+        fc.setQuestion(q);
+        fc.setAnswer(a);
+        flashcards.push_back(fc);
+    }
+
+    qfile.close();
+    afile.close();
+}
+
+// Unit test for loadfc
+void test_loadfc() {
+    // Create test input files
+    ofstream qfile("questions.txt");
+    ofstream afile("answers.txt");
+
+    qfile << "What is the capital of Japan?\n";
+    qfile << "What is 10 * 10?\n";
+
+    afile << "Tokyo\n";
+    afile << "100\n";
+
+    qfile.close();
+    afile.close();
+
+    vector<Flashcard> flashcards;
+    loadfc(flashcards);
+
+    assert(flashcards.size() == 2);
+    assert(flashcards[0].getQuestion() == "What is the capital of Japan?");
+    assert(flashcards[0].getAnswer() == "Tokyo");
+    assert(flashcards[1].getQuestion() == "What is 10 * 10?");
+    assert(flashcards[1].getAnswer() == "100");
+
+    cout << "test_loadfc passed successfully.\n";
+}
+
+int main() {
+    test_loadfc();
+    return 0;
+}
