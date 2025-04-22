@@ -1,0 +1,65 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class Flashcard {
+private:
+    string question;
+    string answer;
+
+public:
+    Flashcard() {}
+    Flashcard(string q, string a) {
+        question = q;
+        answer = a;
+    }
+
+    void setQuestion(string q) { question = q; }
+    void setAnswer(string a) { answer = a; }
+
+    string getQuestion() const { return question; }
+    string getAnswer() const { return answer; }
+};
+
+void shuffleFlashcards(vector<Flashcard>& flashcards) {
+    srand(static_cast<unsigned int>(time(0)));
+    for (int i = 0; i < flashcards.size(); ++i) {
+        int j = rand() % flashcards.size();
+        swap(flashcards[i], flashcards[j]);
+    }
+}
+
+void test_shuffleFlashcards() {
+    // Original flashcards
+    vector<Flashcard> flashcards;
+    flashcards.push_back(Flashcard("Q1", "A1"));
+    flashcards.push_back(Flashcard("Q2", "A2"));
+    flashcards.push_back(Flashcard("Q3", "A3"));
+    flashcards.push_back(Flashcard("Q4", "A4"));
+
+    // Display before shuffle
+    cout << "Before shuffle:\n";
+    for (int i = 0; i < flashcards.size(); i++) {
+        cout << flashcards[i].getQuestion() << " - " << flashcards[i].getAnswer() << endl;
+    }
+
+    // Shuffle the flashcards
+    shuffleFlashcards(flashcards);
+
+    // Display after shuffle
+    cout << "\nAfter shuffle:\n";
+    for (int i = 0; i < flashcards.size(); i++) {
+        cout << flashcards[i].getQuestion() << " - " << flashcards[i].getAnswer() << endl;
+    }
+
+    cout << "\nCheck visually if the order changed.\n";
+}
+
+int main() {
+    test_shuffleFlashcards();
+    return 0;
+}
