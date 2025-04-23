@@ -1,3 +1,8 @@
+The Flashcard application will help the users to add more reliability to the methods they study, the use of flashcards have helped 
+me alot for a number of classes and hope it will do the same to the users of this application. Flashcards program will allow its 
+users to create their own flashcards, and then run a study session with them in a random order from what they entered the flashcards in. 
+It also has option to delete all the flashcards from the files memory and reset them. 
+
 The Flashcard Quiz.cpp contains the code for the entire program. 
 And the answers.txt and questions.txt should be empty text files as they are used to store the user entered questions and answers.
 
