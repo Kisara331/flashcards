@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// Flashcard class
 class Flashcard {
 private:
     string question;
